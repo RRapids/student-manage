@@ -1,13 +1,7 @@
 package com.sm.factory;
 
-import com.sm.service.AdminService;
-import com.sm.service.CClassService;
-import com.sm.service.DepartmentService;
-import com.sm.service.StudentService;
-import com.sm.service.impl.AdminServiceImpl;
-import com.sm.service.impl.CClassServiceImpl;
-import com.sm.service.impl.DepartmentServiceImpl;
-import com.sm.service.impl.StudentServiceImpl;
+import com.sm.service.*;
+import com.sm.service.impl.*;
 
 public class ServiceFactory {
     public static AdminService getAdminServiceInstance() {
@@ -21,5 +15,8 @@ public class ServiceFactory {
     }
     public static StudentService getStudentServiceInstance(){
         return new StudentServiceImpl();
+    }
+    public static RewardsService getRewardsServiceInstance(){
+        return new RewardsServiceImpl();
     }
 }

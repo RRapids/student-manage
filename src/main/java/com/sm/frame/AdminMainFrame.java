@@ -76,6 +76,11 @@ public class AdminMainFrame extends JFrame {
     private JTextField phoneTextField;
     private JButton 编辑Button;
     private JButton 初始化数据Button;
+    private JComboBox comboBox3;
+    private JTextField textField3;
+    private JButton 查询Button;
+    private JButton 新增奖惩Button;
+    private JPanel listPanel;
     private TimerTask clockTask;
     private Timer timer;
     private Admin admin;
@@ -294,7 +299,6 @@ public class AdminMainFrame extends JFrame {
         jPopupMenu.add(item);
         table.add(jPopupMenu);
         //表格监听
-
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -369,6 +373,72 @@ public class AdminMainFrame extends JFrame {
         });
 
     }
+    public void showRewardsTable(List<Rewards> rewardsList){
+        listPanel.removeAll();
+        //创建表格
+        JTable table = new JTable();
+        //表格数据模型
+        DefaultTableModel model = new DefaultTableModel();
+        table.setModel(model);
+        //表头内容
+        model.setColumnIdentifiers(new String[]{"编号", "奖惩类型", "日期", "学号", "姓名", "原因"});
+        for (Rewards rewards:rewardsList) {
+            Object[] objects = new Object[]{rewards.getId(),rewards.getType(),rewards.getRewardsDate(),rewards.getNumber(),rewards.getName()
+            ,rewards.getReason()};
+            model.addRow(objects);
+        }
+        //获得表头
+        JTableHeader head = table.getTableHeader();
+        //表头居中
+        DefaultTableCellHeaderRenderer hr = new DefaultTableCellHeaderRenderer();
+        hr.setHorizontalAlignment(JLabel.CENTER);
+        head.setDefaultRenderer(hr);
+        //设置表头大小
+        head.setPreferredSize(new Dimension(head.getWidth(), 40));
+        //设置表头字体
+        head.setFont(new Font("楷体", Font.PLAIN, 22));
+        //设置表格行高
+        table.setRowHeight(35);
+        //表格背景色
+        table.setBackground(new Color(212, 212, 212));
+        //表格内容居中
+        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
+        r.setHorizontalAlignment(JLabel.CENTER);
+        table.setDefaultRenderer(Object.class, r);
+        //表格加入滚动面板，水平垂直方向带滚动条
+        JScrollPane scrollPane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        listPanel.add(scrollPane);
+        listPanel.revalidate();
+        //弹出菜单
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        JMenuItem item = new JMenuItem("删除");
+        jPopupMenu.add(item);
+        table.add(jPopupMenu);
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                row = table.getSelectedRow();
+                if (e.getButton() == 3) {
+                    jPopupMenu.show(table, e.getX(), e.getY());
+                }
+            }
+        });
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = (String) table.getValueAt(row, 0);
+                int choice = JOptionPane.showConfirmDialog(listPanel, "确定删除吗");
+                if (choice == 0) {
+                    if (row != -1) {
+                        model.removeRow(row);
+                    }
+                    //刷新表格数据
+                    ServiceFactory.getRewardsServiceInstance().deleteById(id);
+                }
+            }
+        });
+    }
 
     public AdminMainFrame(Admin admin) {
         this.admin = admin;
@@ -415,7 +485,16 @@ public class AdminMainFrame extends JFrame {
                 }
             }
         });
-
+        查询Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String keywords = textField3.getText().trim();
+                List<Rewards> rewardsList = ServiceFactory.getRewardsServiceInstance().selectByKeywords(keywords);
+                if (rewardsList !=null){
+                    showRewardsTable(rewardsList);
+                }
+            }
+        });
         院系管理Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -429,7 +508,6 @@ public class AdminMainFrame extends JFrame {
                 showClassPanel();
             }
         });
-
         新增院校Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -518,6 +596,10 @@ public class AdminMainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(centerPanel, "Card4");
+                List<Rewards> rewardsList = ServiceFactory.getRewardsServiceInstance().getAll();
+                comboBox3.addItem("学号查询");
+                comboBox3.addItem("姓名查询");
+                showRewardsTable(rewardsList);
             }
         });
         depNameField.addFocusListener(new FocusAdapter() {
@@ -526,7 +608,6 @@ public class AdminMainFrame extends JFrame {
                 depNameField.setText("");
             }
         });
-
         选择院系Logo图Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -545,7 +626,6 @@ public class AdminMainFrame extends JFrame {
                 }
             }
         });
-
         新增Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -607,7 +687,6 @@ public class AdminMainFrame extends JFrame {
                 }
             }
         });
-
         初始化数据Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -641,11 +720,17 @@ public class AdminMainFrame extends JFrame {
                 编辑Button.setVisible(false);
             }
         });
-
         新增学生Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AddFrame(AdminMainFrame.this);
+                AdminMainFrame.this.setEnabled(false);
+            }
+        });
+        新增奖惩Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RewardsAddFrame(AdminMainFrame.this);
                 AdminMainFrame.this.setEnabled(false);
             }
         });
