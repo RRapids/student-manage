@@ -81,6 +81,7 @@ public class AdminMainFrame extends JFrame {
     private JButton 查询Button;
     private JButton 新增奖惩Button;
     private JPanel listPanel;
+    private JButton 返回Button;
     private TimerTask clockTask;
     private Timer timer;
     private Admin admin;
@@ -187,7 +188,7 @@ public class AdminMainFrame extends JFrame {
         Font titleFont = new Font("微软雅黑", Font.PLAIN, 22);
         for (Department department : departmentList) {
             ImgPanel depPanel = new ImgPanel();
-            depPanel.setFileName("bg3.jpg");
+            depPanel.setFileName("kuang.jpeg");
             depPanel.repaint();
             depPanel.setPreferredSize(new Dimension(350, 500));
             depPanel.setLayout(null);
@@ -443,7 +444,7 @@ public class AdminMainFrame extends JFrame {
     public AdminMainFrame(Admin admin) {
         this.admin = admin;
         adminLabel.setText("管理员：" + admin.getAdminName());
-        rootPanel.setFileName("bg.jpg");
+        rootPanel.setFileName("timg.jpeg");
         rootPanel.repaint();
         setTitle("主界面");
         setContentPane(rootPanel);
@@ -597,6 +598,7 @@ public class AdminMainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(centerPanel, "Card4");
                 List<Rewards> rewardsList = ServiceFactory.getRewardsServiceInstance().getAll();
+                comboBox3.removeAllItems();
                 comboBox3.addItem("学号查询");
                 comboBox3.addItem("姓名查询");
                 showRewardsTable(rewardsList);
@@ -718,6 +720,14 @@ public class AdminMainFrame extends JFrame {
                 textField2.setText("");
                 //编制按钮隐藏
                 编辑Button.setVisible(false);
+            }
+        });
+        返回Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Rewards> rewardsList = ServiceFactory.getRewardsServiceInstance().getAll();
+                showRewardsTable(rewardsList);
+                textField3.setText("");
             }
         });
         新增学生Button.addActionListener(new ActionListener() {

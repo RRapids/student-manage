@@ -3,6 +3,7 @@ package com.sm.frame;
 import com.eltima.components.ui.DatePicker;
 import com.sm.entity.Rewards;
 import com.sm.factory.ServiceFactory;
+import com.sm.ui.ImgPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class RewardsAddFrame extends JFrame {
-    private JPanel rootPanel;
+    private ImgPanel rootPanel;
     private JTextField typeTextField;
     private JTextField numberTextField;
     private JTextField nameTextField4;
@@ -28,6 +29,7 @@ public class RewardsAddFrame extends JFrame {
 
     public RewardsAddFrame(AdminMainFrame adminMainFrame) {
         this.adminMainFrame = adminMainFrame;
+        rootPanel.setFileName("bg4.jpeg");
         setTitle("新增学生界面");
         setContentPane(rootPanel);
         setSize(600,400);
@@ -39,6 +41,7 @@ public class RewardsAddFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 RewardsAddFrame.this.dispose();
+                adminMainFrame.setEnabled(true);
             }
         });
         DatePicker datepick = getDatePicker();
